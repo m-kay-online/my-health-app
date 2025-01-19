@@ -52,5 +52,37 @@ router.delete('/:patientId', (req, res) => {
     });
   });
 
+  
+  router.put('/:patientId', (req, res) => {
+    const { patientId } = req.params;
+    const { name, dob, father_name, husband_name, gender, mobile } = req.body;
+
+    // Update the patients table
+    db.query(
+        'UPDATE patients SET name = ?, dob = ?, father_name = ?, husband_name = ?, gender = ?, mobile = ? WHERE id = ?',
+        [name, dob, father_name, husband_name, gender, mobile, patientId],
+        (err, results) => {
+            if (err) {
+                console.error('Error updating patient:', err);
+                return res.status(500).send('Error updating patient');
+            }
+
+            // Update the tests table
+            db.query(
+                'UPDATE tests SET Name = ? WHERE Patient_ID = ?',
+                [name, patientId],
+                (err, results) => {
+                    if (err) {
+                        console.error('Error updating tests:', err);
+                        return res.status(500).send('Error updating tests');
+                    }
+
+                    res.send('Patient and tests updated successfully');
+                }
+            );
+        }
+    );
+});
+  
 
 module.exports = router;
