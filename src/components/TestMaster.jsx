@@ -31,7 +31,7 @@ const TestMaster = () => {
         const response = await api.get("/tests");
         setTests(response.data);
       } catch (error) {
-        console.error("Error fetching tests:", error); // Added error handling
+        console.error("Error fetching tests:", error);
       }
     };
 
@@ -64,7 +64,7 @@ const TestMaster = () => {
       (test) => test.test_name === formData.test
     );
     if (!selectedTestCost) {
-      console.error("Test cost not found"); // Added error handling
+      console.error("Test cost not found");
       return;
     }
 
@@ -72,29 +72,28 @@ const TestMaster = () => {
       (patient) => patient.id === parseInt(formData.patientId)
     );
     if (!selectedPatient) {
-      console.error("Patient not found"); // Added error handling
+      console.error("Patient not found");
       return;
     }
 
     const newTest = {
       ...formData,
-      name: selectedPatient.name, // Set the name field
+      name: selectedPatient.name,
       cost: selectedTestCost.cost,
     };
 
     try {
       if (isEditing) {
-        await api.put(`/tests/${editTestId}`, newTest);
+        await api.put(`/tests/${editTestId}`, newTest); // Use editTestId (Test_ID)
         setIsEditing(false);
         setEditTestId(null);
       } else {
-        console.log(newTest); // Added logging for debugging
         await api.post("/tests", newTest);
       }
 
       setFormData({
         patientId: "",
-        name: "", // Reset name field
+        name: "",
         test: "",
         testPerformed: "Not Selected",
         paymentDue: "Not Selected",
@@ -103,29 +102,29 @@ const TestMaster = () => {
       const response = await api.get("/tests");
       setTests(response.data);
     } catch (error) {
-      console.error("Error saving test:", error); // Added error handling
+      console.error("Error saving test:", error);
     }
   };
 
   const handleEdit = (test) => {
     setFormData({
       patientId: test.Patient_ID,
-      name: test.Name, 
-      test: (test.Tests).toLowerCase(),
+      name: test.Name,
+      test: test.Tests.toLowerCase(),
       testPerformed: test.Test_Performed,
       paymentDue: test.Payment_Due,
     });
     setIsEditing(true);
-    setEditTestId(test.id); // Ensure editTestId is set correctly
+    setEditTestId(test.Test_ID); // Use Test_ID
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (testId) => {
     try {
-      await api.delete(`/tests/${id}`);
+      await api.delete(`/tests/${testId}`);
       const response = await api.get("/tests");
       setTests(response.data);
     } catch (error) {
-      console.error("Error deleting test:", error); // Added error handling
+      console.error("Error deleting test:", error);
     }
   };
 
@@ -207,6 +206,7 @@ const TestMaster = () => {
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
+            <th className="py-2 px-4 border">Test ID</th>
             <th className="py-2 px-4 border">Patient ID</th>
             <th className="py-2 px-4 border">Name</th>
             <th className="py-2 px-4 border">Test</th>
@@ -218,8 +218,8 @@ const TestMaster = () => {
         </thead>
         <tbody>
           {tests.map((test) => (
-            <tr key={nanoid()}>
-              {console.log(test)}
+            <tr key={test.Test_ID}>
+              <td className="py-2 px-4 border">{test.Test_ID}</td>
               <td className="py-2 px-4 border">{test.Patient_ID}</td>
               <td className="py-2 px-4 border">{test.Name}</td>
               <td className="py-2 px-4 border">{test.Tests}</td>
@@ -234,7 +234,7 @@ const TestMaster = () => {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(test.id)}
+                  onClick={() => handleDelete(test.Test_ID)}
                   className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   Delete
