@@ -1,90 +1,94 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../api'; // Axios instance
+import api from '../api';
 
 const PatientInfo = () => {
-    const { id } = useParams(); // Get patient ID from the URL
-    const navigate = useNavigate(); // For navigation
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [patient, setPatient] = useState(null);
     const [tests, setTests] = useState([]);
+    const [totalCostDue, setTotalCostDue] = useState(0);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch patient details
-        api.get(`/patients/${id}`)
-            .then((response) => {
-                setPatient(response.data);
-            })
-            .catch((error) => console.error('Error fetching patient:', error));
+        const fetchPatientInfo = async () => {
+            try {
+                const response = await api.get(`/patients/${id}`);
+                setPatient(response.data.patient);
+                setTests(response.data.tests);
+                setTotalCostDue(response.data.totalCostDue);
+            } catch (err) {
+                setError('Failed to fetch patient info.');
+            }
+        };
 
-        // Fetch tests for the patient
-        api.get(`/tests/${id}`)
-            .then((response) => {
-                setTests(response.data);
-            })
-            .catch((error) => console.error('Error fetching tests:', error));
+        fetchPatientInfo();
     }, [id]);
+
+    const handleDeleteTest = async (testId) => {
+        try {
+            await api.delete(`/tests/${testId}`);
+            setTests(tests.filter(test => test.Test_ID !== testId));
+            setTotalCostDue(tests.filter(test => test.Test_ID !== testId && test.Payment_Due === 'No').reduce((sum, test) => sum + test.Cost, 0));
+        } catch (err) {
+            setError('Failed to delete test.');
+        }
+    };
+
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
 
     if (!patient) {
         return <div>Loading...</div>;
     }
 
-    const totalCost = tests.reduce((sum, test) => sum + test.cost, 0);
-    const totalPaid = tests.filter((test) => test.paid).reduce((sum, test) => sum + test.cost, 0);
-
     return (
         <div className="p-8">
-            <h2 className="text-2xl font-bold mb-4">Patient Information</h2>
+            <h2 className="text-2xl font-bold mb-4">Patient Info</h2>
             <div className="mb-4">
-                <strong>Name:</strong> {patient.name}
+                <p><strong>Name:</strong> {patient.name}</p>
+                <p><strong>Date of Birth:</strong> {patient.dob}</p>
+                <p><strong>Father's Name:</strong> {patient.father_name}</p>
+                <p><strong>Husband's Name:</strong> {patient.husband_name}</p>
+                <p><strong>Gender:</strong> {patient.gender}</p>
+                <p><strong>Mobile:</strong> {patient.mobile}</p>
             </div>
-            <div className="mb-4">
-                <strong>DOB:</strong> {patient.dob}
-            </div>
-            <div className="mb-4">
-                <strong>Father's Name:</strong> {patient.father_name}
-            </div>
-            <div className="mb-4">
-                <strong>Husband's Name:</strong> {patient.husband_name || 'N/A'}
-            </div>
-            <div className="mb-4">
-                <strong>Gender:</strong> {patient.gender}
-            </div>
-            <div className="mb-4">
-                <strong>Mobile:</strong> {patient.mobile}
-            </div>
-
             <h3 className="text-xl font-bold mb-4">Tests</h3>
             <table className="min-w-full bg-white border">
                 <thead>
                     <tr>
-                        <th className="py-2 px-4 border">Test Name</th>
+                        <th className="py-2 px-4 border">Test ID</th>
+                        <th className="py-2 px-4 border">Test</th>
                         <th className="py-2 px-4 border">Cost</th>
-                        <th className="py-2 px-4 border">Status</th>
+                        <th className="py-2 px-4 border">Test Performed</th>
+                        <th className="py-2 px-4 border">Payment Due</th>
+                        <th className="py-2 px-4 border">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {tests.map((test) => (
-                        <tr key={test.id}>
-                            <td className="py-2 px-4 border">{test.test_name}</td>
-                            <td className="py-2 px-4 border">{test.cost}</td>
-                            <td className="py-2 px-4 border">{test.paid ? 'Paid' : 'Pending'}</td>
+                    {tests.map(test => (
+                        <tr key={test.Test_ID}>
+                            <td className="py-2 px-4 border">{test.Test_ID}</td>
+                            <td className="py-2 px-4 border">{test.Tests}</td>
+                            <td className="py-2 px-4 border">{test.Cost}</td>
+                            <td className="py-2 px-4 border">{test.Test_Performed}</td>
+                            <td className="py-2 px-4 border">{test.Payment_Due}</td>
+                            <td className="py-2 px-4 border">
+                                <button
+                                    onClick={() => handleDeleteTest(test.Test_ID)}
+                                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                >
+                                    Delete
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
-            <h3 className="text-xl font-bold mt-4">Summary</h3>
-            <div className="mb-2">
-                <strong>Total Cost:</strong> {totalCost}
+            <div className="mt-4">
+                <strong>Total Cost Due:</strong> {totalCostDue}
             </div>
-            <div className="mb-2">
-                <strong>Paid:</strong> {totalPaid}
-            </div>
-            <div className="mb-2">
-                <strong>Due:</strong> {totalCost - totalPaid}
-            </div>
-
-            <button onClick={() => navigate('/patient-details')} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Go Back</button>
         </div>
     );
 };

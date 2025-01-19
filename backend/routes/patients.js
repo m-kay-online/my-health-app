@@ -9,13 +9,21 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-    const { id } = req.params;
-    db.query('SELECT * FROM patients WHERE id = ?', [id], (err, results) => {
-        if (err) return res.status(500).send('Error fetching patient');
-        res.json(results[0]);
+router.get('/:patientId', (req, res) => {
+    const { patientId } = req.params;
+    db.query('SELECT * FROM patients WHERE id = ?', [patientId], (err, patientResults) => {
+      if (err) return res.status(500).send('Error fetching patient details');
+      if (patientResults.length === 0) return res.status(404).send('Patient not found');
+  
+      db.query('SELECT * FROM tests WHERE Patient_ID = ?', [patientId], (err, testResults) => {
+        if (err) return res.status(500).send('Error fetching tests');
+        const totalCostDue = testResults
+          .filter(test => test.Payment_Due === 'No')
+          .reduce((sum, test) => sum + test.Cost, 0);
+        res.json({ patient: patientResults[0], tests: testResults, totalCostDue });
+      });
     });
-});
+  });
 
 router.post('/patients', (req, res) => {
     const { name, dob, father_name, husband_name, gender, mobile } = req.body;
@@ -33,16 +41,16 @@ router.post('/patients', (req, res) => {
 });
 
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('DELETE FROM patients WHERE id = ?', [id], (err, results) => {
-    if (err) return res.status(500).send('Error deleting patient');
-    db.query('DELETE FROM tests WHERE patient_id = ?', [id], (err, results) => {
+router.delete('/:patientId', (req, res) => {
+    const { patientId } = req.params;
+    db.query('DELETE FROM tests WHERE Patient_ID = ?', [patientId], (err) => {
       if (err) return res.status(500).send('Error deleting tests');
-      res.send('Patient and their tests deleted successfully');
+      db.query('DELETE FROM patients WHERE id = ?', [patientId], (err) => {
+        if (err) return res.status(500).send('Error deleting patient');
+        res.send('Patient and associated tests deleted successfully');
+      });
     });
   });
-});
 
 
 module.exports = router;

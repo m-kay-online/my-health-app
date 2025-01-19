@@ -16,7 +16,7 @@ const App = () => (
             <Route path="/home" element={<Home />} />
             <Route path="/new-patient" element={<PatientForm onClose={() => window.history.back()} />} />
             <Route path="/patient-details" element={<PatientDetails />} />
-            <Route path="/patient/:id" element={<PatientInfo />} />
+            <Route path="/patient-info/:id" element={<PatientInfo />} />
             <Route path="/test-master" element={<TestMaster />} />
         </Routes>
     </Router>
