@@ -190,7 +190,7 @@ const TestMaster = () => {
             className="w-full p-2 border rounded"
           >
             <option value="Not Selected">Not Selected</option>
-            <option value="Done">Done</option>
+            <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
         </div>
