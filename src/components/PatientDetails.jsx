@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
 
 const PatientDetails = () => {
   const [patients, setPatients] = useState([]);
   const [tests, setTests] = useState([]);
   const { patientId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -35,6 +36,17 @@ const PatientDetails = () => {
     }
   }, [patientId]);
 
+  const handleDeletePatient = async (id) => {
+    try {
+      await api.delete(`/patients/${id}`);
+      await api.delete(`/tests/${id}`);
+      const response = await api.get('/patients');
+      setPatients(response.data);
+    } catch (error) {
+      console.error('Error deleting patient:', error);
+    }
+  };
+
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Patient Details</h2>
@@ -47,6 +59,7 @@ const PatientDetails = () => {
             <th className="py-2 px-4 border">Father's Name</th>
             <th className="py-2 px-4 border">Gender</th>
             <th className="py-2 px-4 border">Mobile</th>
+            <th className="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +75,14 @@ const PatientDetails = () => {
               <td className="py-2 px-4 border">{patient.father_name}</td>
               <td className="py-2 px-4 border">{patient.gender}</td>
               <td className="py-2 px-4 border">{patient.mobile}</td>
+              <td className="py-2 px-4 border">
+                <button onClick={() => navigate(`/edit-patient/${patient.id}`)} className="mr-2 px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                  Edit
+                </button>
+                <button onClick={() => handleDeletePatient(patient.id)} className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

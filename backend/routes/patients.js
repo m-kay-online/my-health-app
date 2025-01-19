@@ -32,4 +32,17 @@ router.post('/patients', (req, res) => {
     );
 });
 
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM patients WHERE id = ?', [id], (err, results) => {
+    if (err) return res.status(500).send('Error deleting patient');
+    db.query('DELETE FROM tests WHERE patient_id = ?', [id], (err, results) => {
+      if (err) return res.status(500).send('Error deleting tests');
+      res.send('Patient and their tests deleted successfully');
+    });
+  });
+});
+
+
 module.exports = router;
