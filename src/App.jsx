@@ -7,6 +7,7 @@ import PatientDetails from './components/PatientDetails';
 import TestMaster from './components/TestMaster';
 import PatientInfo from './components/PatientInfo';
 import Sidebar from './components/Sidebar';
+import TestDepartment from './components/TestDepartment';
 
 const Main = () => {
     const location = useLocation();
@@ -24,6 +25,7 @@ const Main = () => {
                     <Route path="/patient-details" element={<PatientDetails />} />
                     <Route path="/patient-info/:id" element={<PatientInfo />} />
                     <Route path="/test-master" element={<TestMaster />} />
+                    <Route path="/test-department" element={<TestDepartment/>}/>
                 </Routes>
             </div>
         </div>

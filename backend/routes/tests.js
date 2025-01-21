@@ -3,7 +3,11 @@ const router = express.Router();
 const db = require('../config/db');
 
 router.get('/', (req, res) => {
-  db.query('SELECT * FROM tests', (err, results) => {
+  db.query(`
+    SELECT tests.*, test_cost.department 
+    FROM tests 
+    LEFT JOIN test_cost ON tests.Tests = test_cost.test_name
+  `, (err, results) => {
     if (err) return res.status(500).send('Error fetching tests');
     res.json(results);
   });

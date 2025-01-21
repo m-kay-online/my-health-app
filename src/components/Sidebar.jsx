@@ -8,6 +8,7 @@ const Sidebar = () => (
                 <Link to="/new-patient" className="block py-2 px-4 rounded hover:bg-gray-700">New Patient</Link>
                 <Link to="/patient-details" className="block py-2 px-4 rounded hover:bg-gray-700">Patient Details</Link>
                 <Link to="/test-master" className="block py-2 px-4 rounded hover:bg-gray-700">Test Master</Link>
+                <Link to="/test-department" className="block py-2 px-4 rounded hover:bg-gray-700">Test Department</Link>
             </nav>
         </div>
     </div>

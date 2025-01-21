@@ -6,6 +6,7 @@ require('dotenv').config(); // Load .env file
 const authRoutes = require('./routes/auth');
 const patientRoutes = require('./routes/patients');
 const testRoutes = require('./routes/tests');
+const testCostRoutes = require('./routes/testcost');
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 app.use('/auth', authRoutes);
 app.use('/patients', patientRoutes);
 app.use('/tests', testRoutes);
+app.use('/test-costs', testCostRoutes); // Ensure this matches the frontend call
 
 // Add a route for the root URL
 app.get('/', (req, res) => {

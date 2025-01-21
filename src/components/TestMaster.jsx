@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { nanoid } from "nanoid";
 import api from "../api";
 
 const TestMaster = () => {
@@ -22,7 +21,7 @@ const TestMaster = () => {
         const response = await api.get("/patients");
         setPatients(response.data);
       } catch (error) {
-        console.error("Error fetching patients:", error); // Added error handling
+        console.error("Error fetching patients:", error);
       }
     };
 
@@ -40,7 +39,7 @@ const TestMaster = () => {
         const response = await api.get("/tests/test-costs");
         setTestCosts(response.data);
       } catch (error) {
-        console.error("Error fetching test costs:", error); // Added error handling
+        console.error("Error fetching test costs:", error);
       }
     };
 
@@ -84,7 +83,7 @@ const TestMaster = () => {
 
     try {
       if (isEditing) {
-        await api.put(`/tests/${editTestId}`, newTest); // Use editTestId (Test_ID)
+        await api.put(`/tests/${editTestId}`, newTest);
         setIsEditing(false);
         setEditTestId(null);
       } else {
@@ -115,7 +114,7 @@ const TestMaster = () => {
       paymentDue: test.Payment_Due,
     });
     setIsEditing(true);
-    setEditTestId(test.Test_ID); // Use Test_ID
+    setEditTestId(test.Test_ID);
   };
 
   const handleDelete = async (testId) => {
@@ -213,6 +212,7 @@ const TestMaster = () => {
             <th className="py-2 px-4 border">Cost</th>
             <th className="py-2 px-4 border">Test Performed</th>
             <th className="py-2 px-4 border">Payment Due</th>
+            <th className="py-2 px-4 border">Department</th>
             <th className="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
@@ -226,6 +226,7 @@ const TestMaster = () => {
               <td className="py-2 px-4 border">{test.Cost}</td>
               <td className="py-2 px-4 border">{test.Test_Performed}</td>
               <td className="py-2 px-4 border">{test.Payment_Due}</td>
+              <td className="py-2 px-4 border">{test.department}</td>
               <td className="py-2 px-4 border">
                 <button
                   onClick={() => handleEdit(test)}
