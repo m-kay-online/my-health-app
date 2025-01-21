@@ -109,7 +109,7 @@ const TestMaster = () => {
     setFormData({
       patientId: test.Patient_ID,
       name: test.Name,
-      test: test.Tests.toLowerCase(),
+      test: test.Tests,
       testPerformed: test.Test_Performed,
       paymentDue: test.Payment_Due,
     });

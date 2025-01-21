@@ -17,7 +17,6 @@ const PatientDetails = () => {
   });
   const navigate = useNavigate();
 
-  // Convert UTC date string to IST and format as YYYY-MM-DD
   const convertToIST = (utcDateStr) => {
     const utcDate = new Date(utcDateStr);
     const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30 in milliseconds
@@ -29,15 +28,10 @@ const PatientDetails = () => {
     const fetchPatients = async () => {
       try {
         const response = await api.get("/patients");
-        // Convert each patient's dob to IST
-        const updatedPatients = response.data.map((patient) => ({
-          ...patient,
-          dob: convertToIST(patient.dob),
-        }));
-        setPatients(updatedPatients);
+        setPatients(response.data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch patients.");
+        setError("Failed to fetch patients. Please try again.");
         setLoading(false);
       }
     };
@@ -46,10 +40,11 @@ const PatientDetails = () => {
   }, []);
 
   const handleEditClick = (patient) => {
+    const formattedDob = convertToIST(patient.dob)
     setEditingPatient(patient);
     setFormData({
       name: patient.name,
-      dob: patient.dob, // Already converted to IST
+      dob: formattedDob,
       father_name: patient.father_name,
       husband_name: patient.husband_name,
       gender: patient.gender,
@@ -59,10 +54,10 @@ const PatientDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -75,7 +70,7 @@ const PatientDetails = () => {
       setPatients(updatedPatients);
       setEditingPatient(null);
     } catch (err) {
-      setError("Failed to update patient.");
+      setError("Failed to update patient. Please try again.");
     }
   };
 
@@ -84,7 +79,7 @@ const PatientDetails = () => {
       await api.delete(`/patients/${patientId}`);
       setPatients(patients.filter((patient) => patient.id !== patientId));
     } catch (err) {
-      setError("Failed to delete patient.");
+      setError("Failed to delete patient. Please try again.");
     }
   };
 
@@ -175,7 +170,59 @@ const PatientDetails = () => {
                 className="w-full p-2 border rounded"
               />
             </div>
-            {/* Other fields remain unchanged */}
+            <div>
+              <label className="block mb-1">Father's Name:</label>
+              <input
+                type="text"
+                name="father_name"
+                value={formData.father_name}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Husband's Name:</label>
+              <input
+                type="text"
+                name="husband_name"
+                value={formData.husband_name}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Gender:</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="block mb-1">Mobile:</label>
+              <input
+                type="text"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Save Changes
+            </button>
           </form>
         </div>
       )}
