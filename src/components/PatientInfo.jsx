@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
+import jsPDF from "jspdf";
 
 const PatientInfo = () => {
   const { id } = useParams();
@@ -56,6 +57,54 @@ const PatientInfo = () => {
     } catch (err) {
       setError("Failed to delete test. Please try again.");
     }
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 10;
+    const lineHeight = 10;
+    let y = margin;
+
+    doc.setFontSize(16);
+    doc.text("Patient Info", margin, y);
+    y += lineHeight;
+
+    doc.setFontSize(12);
+    doc.text(`Patient ID: ${patient.id}`, margin, y);
+    y += lineHeight;
+    doc.text(`Name: ${patient.name}`, margin, y);
+    y += lineHeight;
+    doc.text(`Date of Birth: ${convertToIST(patient.dob)}`, margin, y);
+    y += lineHeight;
+    doc.text(`Father's Name: ${patient.father_name}`, margin, y);
+    y += lineHeight;
+    doc.text(`Husband's Name: ${patient.husband_name}`, margin, y);
+    y += lineHeight;
+    doc.text(`Gender: ${patient.gender}`, margin, y);
+    y += lineHeight;
+    doc.text(`Mobile: ${patient.mobile}`, margin, y);
+    y += lineHeight * 2;
+
+    doc.setFontSize(16);
+    doc.text("Tests", margin, y);
+    y += lineHeight;
+
+    doc.setFontSize(12);
+    tests.forEach((test, index) => {
+      const testInfo = `${index + 1}. Test ID: ${test.Test_ID}, Test: ${test.Tests}, Cost: ${test.Cost}, Test Performed: ${test.Test_Performed}, Payment Due: ${test.Payment_Due}, Department: ${test.department}`;
+      const splitText = doc.splitTextToSize(testInfo, pageWidth - 2 * margin);
+      doc.text(splitText, margin, y);
+      y += splitText.length * lineHeight;
+    });
+
+    y += lineHeight;
+    doc.setFontSize(14);
+    doc.text(`Total Cost Due: ${totalCostDue}`, margin, y);
+
+    const pdfBlob = doc.output("blob");
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, "_blank");
   };
 
   if (error) {
@@ -146,6 +195,14 @@ const PatientInfo = () => {
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         Back
+      </button>
+
+      {/* PDF Button */}
+      <button
+        onClick={generatePDF}
+        className="mt-4 ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+      >
+        Generate PDF
       </button>
     </div>
   );

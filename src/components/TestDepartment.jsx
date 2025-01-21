@@ -138,7 +138,7 @@ const TestDepartment = () => {
                 <td className="border px-4 py-2">{test.id}</td>
                 <td className="border px-4 py-2">{test.test_name}</td>
                 <td className="border px-4 py-2">{test.department}</td>
-                <td className="border px-4 py-2">${test.cost}</td>
+                <td className="border px-4 py-2">{test.cost}</td>
                 <td className="border px-4 py-2">
                   <button
                     onClick={() => {
