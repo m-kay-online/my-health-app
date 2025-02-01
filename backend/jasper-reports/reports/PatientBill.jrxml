@@ -13,6 +13,10 @@
     bottomMargin="20"
     uuid="13044415-59f6-4462-9fb5-775eb5cc3e66">
 
+    <property name="ireport.zoom" value="1.4641000000000006"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+
     <!-- Parameters and Fields -->
     <parameter name="Patient_ID" class="java.lang.Integer"/>
     
@@ -44,15 +48,15 @@ WHERE t.Patient_ID = $P{Patient_ID};]]>
     <field name="Cost" class="java.math.BigDecimal"/>
     <field name="Test_ID" class="java.lang.Integer"/>
     <field name="Department" class="java.lang.String"/>
-    <field name="dob" class="java.time.LocalDate"/>
+    <field name="dob" class="java.sql.Date"/>
     <field name="father_name" class="java.lang.String"/>
     <field name="husband_name" class="java.lang.String"/>
     <field name="gender" class="java.lang.String"/>
     <field name="mobile" class="java.lang.String"/>
 
     <!-- Fixed Variable Declaration -->
-    <variable name="Cost_Due" class="java.lang.String">
-        <variableExpression><![CDATA[$F{Cost}?.toString()]]></variableExpression>
+    <variable name="Cost_Due" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{Payment_Due} == "Yes" ? $F{Cost} : BigDecimal.ZERO]]></variableExpression>
     </variable>
 
     <!-- Report Structure -->
@@ -82,42 +86,142 @@ WHERE t.Patient_ID = $P{Patient_ID};]]>
                 </textElement>
                 <textFieldExpression><![CDATA["Patient ID: " + $F{Patient_ID}]]></textFieldExpression>
             </textField>
-            <!-- Other text fields remain the same as they use String fields -->
+            <textField>
+                <reportElement x="0" y="20" width="555" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Name: " + $F{Name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="40" width="555" height="19"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Date of Birth: " + $F{dob}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="59" width="555" height="17"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Father Name: " + $F{father_name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="76" width="555" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Husband Name: " + $F{husband_name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="96" width="555" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Gender: " + $F{gender}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="116" width="555" height="24"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Mobile: " + $F{mobile}]]></textFieldExpression>
+            </textField>
         </band>
     </pageHeader>
 
     <columnHeader>
         <band height="20" splitType="Stretch">
-            <!-- Column headers unchanged -->
+            <staticText>
+                <reportElement x="0" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Test ID]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="80" y="0" width="150" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Test]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="230" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cost]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="310" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Test Performed]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="410" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Payment Due]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="490" y="0" width="65" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Department]]></text>
+            </staticText>
         </band>
     </columnHeader>
 
     <detail>
         <band height="20" splitType="Stretch">
-            <!-- Fixed Conversions -->
             <textField>
                 <reportElement x="0" y="0" width="80" height="20"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{Test_ID}?.toString()]]></textFieldExpression>
             </textField>
-            
             <textField>
                 <reportElement x="80" y="0" width="150" height="20"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{Tests}]]></textFieldExpression>
             </textField>
-
             <textField>
                 <reportElement x="230" y="0" width="80" height="20"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{Cost}?.toString()]]></textFieldExpression>
             </textField>
-
-            <!-- Other fields remain unchanged -->
+            <textField>
+                <reportElement x="310" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Test_Performed}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="410" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Payment_Due}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="490" y="0" width="65" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Department}]]></textFieldExpression>
+            </textField>
         </band>
     </detail>
 
     <summary>
-        <band height="50" splitType="Stretch"/>
+        <band height="50" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Total Cost Due: " + $V{Cost_Due}]]></textFieldExpression>
+            </textField>
+        </band>
     </summary>
 </jasperReport>
