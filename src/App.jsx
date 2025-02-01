@@ -8,6 +8,7 @@ import TestMaster from './components/TestMaster';
 import PatientInfo from './components/PatientInfo';
 import Sidebar from './components/Sidebar';
 import TestDepartment from './components/TestDepartment';
+import PrivateRoute from './components/PrivateRoute';
 
 const Main = () => {
     const location = useLocation();
@@ -20,12 +21,12 @@ const Main = () => {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/new-patient" element={<PatientForm onClose={() => window.history.back()} />} />
-                    <Route path="/patient-details" element={<PatientDetails />} />
-                    <Route path="/patient-info/:id" element={<PatientInfo />} />
-                    <Route path="/test-master" element={<TestMaster />} />
-                    <Route path="/test-department" element={<TestDepartment/>}/>
+                    <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+                    <Route path="/new-patient" element={<PrivateRoute><PatientForm onClose={() => window.history.back()} /></PrivateRoute>} />
+                    <Route path="/patient-details" element={<PrivateRoute><PatientDetails /></PrivateRoute>} />
+                    <Route path="/patient-info/:id" element={<PrivateRoute><PatientInfo /></PrivateRoute>} />
+                    <Route path="/test-master" element={<PrivateRoute><TestMaster /></PrivateRoute>} />
+                    <Route path="/test-department" element={<PrivateRoute><TestDepartment /></PrivateRoute>} />
                 </Routes>
             </div>
         </div>

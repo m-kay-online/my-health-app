@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const authenticate = require('../middleware/auth')
 
-router.get('/', (req, res) => {
+router.get('/', authenticate, (req, res) => {
   db.query(`
     SELECT tests.*, test_cost.department 
     FROM tests 
@@ -13,14 +14,14 @@ router.get('/', (req, res) => {
   });
 });
 
-router.get('/test-costs', (req, res) => {
+router.get('/test-costs', authenticate, (req, res) => {
   db.query('SELECT * FROM test_cost', (err, results) => {
     if (err) return res.status(500).send('Error fetching test costs');
     res.json(results);
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', authenticate, (req, res) => {
   const { patientId, name, test, testPerformed, paymentDue, cost } = req.body;
   db.query('SELECT department FROM test_cost WHERE test_name = ?', [test], (err, results) => {
     if (err) return res.status(500).send('Error fetching department');
@@ -39,7 +40,7 @@ router.post('/', (req, res) => {
   });
 });
 
-router.put('/:testId', (req, res) => {
+router.put('/:testId', authenticate, (req, res) => {
   const { testId } = req.params;
   const { patientId, name, test, testPerformed, paymentDue, cost } = req.body;
   db.query('SELECT department FROM test_cost WHERE test_name = ?', [test], (err, results) => {
@@ -59,7 +60,7 @@ router.put('/:testId', (req, res) => {
   });
 });
 
-router.delete('/:testId', (req, res) => {
+router.delete('/:testId', authenticate, (req, res) => {
   const { testId } = req.params;
   db.query('DELETE FROM tests WHERE Test_ID = ?', [testId], (err, results) => {
     if (err) {

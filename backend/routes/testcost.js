@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const authenticate = require('../middleware/auth')
 
 // Fetch all test costs
-router.get('/costs', (req, res) => {
+router.get('/costs', authenticate, (req, res) => {
   db.query('SELECT * FROM test_cost', (err, results) => {
     if (err) return res.status(500).send('Error fetching test costs');
     res.json(results);
@@ -11,7 +12,7 @@ router.get('/costs', (req, res) => {
 });
 
 // Add a new test
-router.post('/costs', (req, res) => {
+router.post('/costs', authenticate, (req, res) => {
   const { test_name, department, cost } = req.body;
   db.query(
     'INSERT INTO test_cost (test_name, department, cost) VALUES (?, ?, ?)',
@@ -24,7 +25,7 @@ router.post('/costs', (req, res) => {
 });
 
 // Delete a test by ID
-router.delete('/costs/:id', (req, res) => {
+router.delete('/costs/:id', authenticate, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM test_cost WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).send('Error deleting test from backend');
@@ -34,7 +35,7 @@ router.delete('/costs/:id', (req, res) => {
 
 
 // Edit a test by ID
-router.put('/costs/:id', (req, res) => {
+router.put('/costs/:id', authenticate, (req, res) => {
   const { id } = req.params;
   const { test_name, department, cost } = req.body;
   db.query(

@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const authenticate = require('../middleware/auth');
 
-router.get('/', (req, res) => {
+router.get('/', authenticate, (req, res) => {
     db.query('SELECT * FROM patients', (err, results) => {
         if (err) return res.status(500).send('Error fetching patients');
         res.json(results);
     });
 });
 
-router.get('/:patientId', (req, res) => {
+router.get('/:patientId', authenticate, (req, res) => {
     const { patientId } = req.params;
     db.query('SELECT * FROM patients WHERE id = ?', [patientId], (err, patientResults) => {
         if (err) return res.status(500).send('Error fetching patient details');
@@ -29,7 +30,7 @@ router.get('/:patientId', (req, res) => {
     });
 });
 
-router.post('/patients', (req, res) => {
+router.post('/patients', authenticate, (req, res) => {
     const { name, dob, father_name, husband_name, gender, mobile } = req.body;
     db.query(
         'INSERT INTO patients (name, dob, father_name, husband_name, gender, mobile) VALUES (?, ?, ?, ?, ?, ?)',
@@ -44,7 +45,7 @@ router.post('/patients', (req, res) => {
     );
 });
 
-router.delete('/:patientId', (req, res) => {
+router.delete('/:patientId', authenticate, (req, res) => {
     const { patientId } = req.params;
     db.query('DELETE FROM tests WHERE Patient_ID = ?', [patientId], (err) => {
         if (err) return res.status(500).send('Error deleting tests');
@@ -55,7 +56,7 @@ router.delete('/:patientId', (req, res) => {
     });
 });
 
-router.put('/:patientId', (req, res) => {
+router.put('/:patientId', authenticate, (req, res) => {
     const { patientId } = req.params;
     const { name, dob, father_name, husband_name, gender, mobile } = req.body;
 
