@@ -31,6 +31,13 @@ const PatientInfo = () => {
         fetchPatientInfo();
     }, [id]);
 
+    const convertToIST = (utcDateStr) => {
+        const utcDate = new Date(utcDateStr);
+        const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30 in milliseconds
+        const istDate = new Date(utcDate.getTime() + istOffset);
+        return istDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      };
+
     const generatePDF = async () => {
         try {
             const response = await api.get(`/reports/generate-pdf/${id}`, {
@@ -59,7 +66,7 @@ const PatientInfo = () => {
             <div className="mb-4">
                 <p><strong>Patient ID:</strong> {patient.id}</p>
                 <p><strong>Name:</strong> {patient.name}</p>
-                <p><strong>Date of Birth:</strong> {patient.dob}</p>
+                <p><strong>Date of Birth:</strong> {convertToIST(patient.dob)}</p>
                 <p><strong>Father's Name:</strong> {patient.father_name}</p>
                 <p><strong>Husband's Name:</strong> {patient.husband_name}</p>
                 <p><strong>Gender:</strong> {patient.gender}</p>
