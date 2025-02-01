@@ -79,6 +79,7 @@ const TestMaster = () => {
       ...formData,
       name: selectedPatient.name,
       cost: selectedTestCost.cost,
+      department: selectedTestCost.department, // Add department here
     };
 
     try {
@@ -212,7 +213,8 @@ const TestMaster = () => {
             <th className="py-2 px-4 border">Cost</th>
             <th className="py-2 px-4 border">Test Performed</th>
             <th className="py-2 px-4 border">Payment Due</th>
-            <th className="py-2 px-4 border">Department</th>
+            <th className="py-2 px-4 border">Department</th>{" "}
+            {/* Add this line */}
             <th className="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
@@ -226,7 +228,8 @@ const TestMaster = () => {
               <td className="py-2 px-4 border">{test.Cost}</td>
               <td className="py-2 px-4 border">{test.Test_Performed}</td>
               <td className="py-2 px-4 border">{test.Payment_Due}</td>
-              <td className="py-2 px-4 border">{test.department}</td>
+              <td className="py-2 px-4 border">{test.Department}</td>{" "}
+              {/* Add this line */}
               <td className="py-2 px-4 border">
                 <button
                   onClick={() => handleEdit(test)}

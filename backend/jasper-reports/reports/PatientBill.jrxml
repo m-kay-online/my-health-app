@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="PatientBill"
+    language="groovy"
+    pageWidth="595"
+    pageHeight="842"
+    columnWidth="555"
+    leftMargin="20"
+    rightMargin="20"
+    topMargin="20"
+    bottomMargin="20"
+    uuid="13044415-59f6-4462-9fb5-775eb5cc3e66">
+
+    <!-- Parameters and Fields -->
+    <parameter name="Patient_ID" class="java.lang.Integer"/>
+    
+    <queryString>
+        <![CDATA[SELECT
+    t.Patient_ID,
+    t.Name,
+    t.Tests,
+    t.Test_Performed,
+    t.Payment_Due,
+    t.Cost,
+    t.Test_ID,
+    t.Department,
+    p.dob,
+    p.father_name,
+    p.husband_name,
+    p.gender,
+    p.mobile
+FROM tests t
+INNER JOIN patients p ON t.Patient_ID = p.id
+WHERE t.Patient_ID = $P{Patient_ID};]]>
+    </queryString>
+
+    <field name="Patient_ID" class="java.lang.Integer"/>
+    <field name="Name" class="java.lang.String"/>
+    <field name="Tests" class="java.lang.String"/>
+    <field name="Test_Performed" class="java.lang.String"/>
+    <field name="Payment_Due" class="java.lang.String"/>
+    <field name="Cost" class="java.math.BigDecimal"/>
+    <field name="Test_ID" class="java.lang.Integer"/>
+    <field name="Department" class="java.lang.String"/>
+    <field name="dob" class="java.time.LocalDate"/>
+    <field name="father_name" class="java.lang.String"/>
+    <field name="husband_name" class="java.lang.String"/>
+    <field name="gender" class="java.lang.String"/>
+    <field name="mobile" class="java.lang.String"/>
+
+    <!-- Fixed Variable Declaration -->
+    <variable name="Cost_Due" class="java.lang.String">
+        <variableExpression><![CDATA[$F{Cost}?.toString()]]></variableExpression>
+    </variable>
+
+    <!-- Report Structure -->
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+
+    <title>
+        <band height="50" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="30"/>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Patient Bill]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <pageHeader>
+        <band height="140" splitType="Stretch">
+            <!-- Patient Details Fields -->
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Patient ID: " + $F{Patient_ID}]]></textFieldExpression>
+            </textField>
+            <!-- Other text fields remain the same as they use String fields -->
+        </band>
+    </pageHeader>
+
+    <columnHeader>
+        <band height="20" splitType="Stretch">
+            <!-- Column headers unchanged -->
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="20" splitType="Stretch">
+            <!-- Fixed Conversions -->
+            <textField>
+                <reportElement x="0" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Test_ID}?.toString()]]></textFieldExpression>
+            </textField>
+            
+            <textField>
+                <reportElement x="80" y="0" width="150" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Tests}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="230" y="0" width="80" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{Cost}?.toString()]]></textFieldExpression>
+            </textField>
+
+            <!-- Other fields remain unchanged -->
+        </band>
+    </detail>
+
+    <summary>
+        <band height="50" splitType="Stretch"/>
+    </summary>
+</jasperReport>

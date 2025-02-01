@@ -22,34 +22,41 @@ router.get('/test-costs', (req, res) => {
 
 router.post('/', (req, res) => {
   const { patientId, name, test, testPerformed, paymentDue, cost } = req.body;
-  console.log('Received data:', req.body);
-  db.query(
-    'INSERT INTO tests (Patient_ID, Name, tests, test_performed, payment_due, cost) VALUES (?, ?, ?, ?, ?, ?)',
-    [patientId, name, test, testPerformed, paymentDue, cost],
-    (err, results) => {
-      if (err) {
-        console.error('Error adding test:', err);
-        return res.status(500).send('Error adding test');
+  db.query('SELECT department FROM test_cost WHERE test_name = ?', [test], (err, results) => {
+    if (err) return res.status(500).send('Error fetching department');
+    const department = results[0].department;
+    db.query(
+      'INSERT INTO tests (Patient_ID, Name, tests, test_performed, payment_due, cost, department) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [patientId, name, test, testPerformed, paymentDue, cost, department],
+      (err, results) => {
+        if (err) {
+          console.error('Error adding test:', err);
+          return res.status(500).send('Error adding test');
+        }
+        res.status(201).send('Test added successfully');
       }
-      res.status(201).send('Test added successfully');
-    }
-  );
+    );
+  });
 });
 
 router.put('/:testId', (req, res) => {
   const { testId } = req.params;
   const { patientId, name, test, testPerformed, paymentDue, cost } = req.body;
-  db.query(
-    'UPDATE tests SET Patient_ID = ?, Name = ?, Tests = ?, Test_Performed = ?, Payment_Due = ?, Cost = ? WHERE Test_ID = ?',
-    [patientId, name, test, testPerformed, paymentDue, cost, testId],
-    (err, results) => {
-      if (err) {
-        console.error('Error updating test:', err);
-        return res.status(500).send('Error updating test');
+  db.query('SELECT department FROM test_cost WHERE test_name = ?', [test], (err, results) => {
+    if (err) return res.status(500).send('Error fetching department');
+    const department = results[0].department;
+    db.query(
+      'UPDATE tests SET Patient_ID = ?, Name = ?, Tests = ?, Test_Performed = ?, Payment_Due = ?, Cost = ?, department = ? WHERE Test_ID = ?',
+      [patientId, name, test, testPerformed, paymentDue, cost, department, testId],
+      (err, results) => {
+        if (err) {
+          console.error('Error updating test:', err);
+          return res.status(500).send('Error updating test');
+        }
+        res.send('Test updated successfully');
       }
-      res.send('Test updated successfully');
-    }
-  );
+    );
+  });
 });
 
 router.delete('/:testId', (req, res) => {
