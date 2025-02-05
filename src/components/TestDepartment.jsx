@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import api from "../api";
 
 const TestDepartment = () => {
@@ -29,6 +31,7 @@ const TestDepartment = () => {
       .catch((err) => {
         setError("Error fetching test data");
         setLoading(false);
+        toast.error("Error fetching test data");
       });
   }, []);
 
@@ -56,10 +59,12 @@ const TestDepartment = () => {
         setShowForm(false);
         setNewTest({ test_name: "", department: "", cost: "" });
         setLoading(false);
+        toast.success("Test added successfully!");
       })
       .catch((err) => {
         setError("Error adding test");
         setLoading(false);
+        toast.error("Error adding test");
       });
   };
 
@@ -76,10 +81,12 @@ const TestDepartment = () => {
         setEditTest(null);
         setNewTest({ test_name: "", department: "", cost: "" });
         setLoading(false);
+        toast.success("Test updated successfully!");
       })
       .catch((err) => {
         setError("Error editing test");
         setLoading(false);
+        toast.error("Error editing test");
       });
   };
 
@@ -91,27 +98,28 @@ const TestDepartment = () => {
     api
       .delete(`test-costs/costs/${id}`)
       .then(() => {
-        console.log("entered then")
         setTests(tests.filter((test) => test.id !== id));
         setFilteredTests(filteredTests.filter((test) => test.id !== id));
         setLoading(false);
+        toast.success("Test deleted successfully!");
       })
       .catch((err) => {
         setError("Error deleting test");
         setLoading(false);
+        toast.error("Error deleting test");
       });
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6  min-h-screen">
       <h1 className="text-2xl font-semibold mb-4 text-gray-800">Test Departments</h1>
 
       {loading && <div className="text-blue-500 mb-4">Loading...</div>}
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
       {/* Filter by Department */}
-      <div className="mb-4">
-        <label className="block text-gray-600 font-medium mb-2">Filter by Department</label>
+      <div className="mb-8">
+        <label className="block text-white font-medium mb-2">Filter by Department</label>
         <input
           type="text"
           value={departmentFilter}
@@ -224,6 +232,7 @@ const TestDepartment = () => {
           </form>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

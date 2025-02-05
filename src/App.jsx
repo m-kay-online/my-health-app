@@ -43,7 +43,7 @@ const Main = () => {
     }, []);
 
     return (
-        <div className='min-h-screen bg-gradient-to-r from-violet-600 to-indigo-600 flex'>
+        <div className='min-h-screen bg-gradient-to-r from-rose-300 to-cyan-500 to-indigo-600 flex'>
             {showSidebar && <Sidebar />}
             <div className={showSidebar ? 'ml-64 w-full' : 'w-full'}>
                 <Routes>

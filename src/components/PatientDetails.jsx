@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from "../api"; // Axios instance
 
 const PatientDetails = () => {
@@ -33,6 +35,7 @@ const PatientDetails = () => {
       } catch (err) {
         setError("Failed to fetch patients. Please try again.");
         setLoading(false);
+        toast.error("Failed to fetch patients. Please try again.");
       }
     };
 
@@ -69,36 +72,42 @@ const PatientDetails = () => {
       );
       setPatients(updatedPatients);
       setEditingPatient(null);
+      toast.success("Patient updated successfully!");
     } catch (err) {
       setError("Failed to update patient. Please try again.");
+      toast.error("Failed to update patient. Please try again.");
     }
   };
 
   const handleDelete = async (patientId) => {
+    if (!window.confirm("Are you sure you want to delete this patient?")) return;
+
     try {
       await api.delete(`/patients/${patientId}`);
       setPatients(patients.filter((patient) => patient.id !== patientId));
+      toast.success("Patient deleted successfully!");
     } catch (err) {
       setError("Failed to delete patient. Please try again.");
+      toast.error("Failed to delete patient. Please try again.");
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-blue-500 text-center text-xl">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="text-red-500 text-center text-xl">{error}</div>;
   }
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Patient List</h2>
+    <div className="p-8  min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Patient List</h2>
       {patients.length === 0 ? (
-        <div>No patients available.</div>
+        <div className="text-white">No patients available.</div>
       ) : (
-        <table className="min-w-full bg-white border">
-          <thead>
+        <table className="min-w-full bg-white shadow-md rounded-lg">
+          <thead className="bg-gray-200">
             <tr>
               <th className="py-2 px-4 border">Patient ID</th>
               <th className="py-2 px-4 border">Name</th>
@@ -111,7 +120,7 @@ const PatientDetails = () => {
           </thead>
           <tbody>
             {patients.map((patient) => (
-              <tr key={patient.id}>
+              <tr key={patient.id} className="hover:bg-gray-100">
                 <td className="py-2 px-4 border">{patient.id}</td>
                 <td className="py-2 px-4 border">{patient.name}</td>
                 <td className="py-2 px-4 border">{patient.father_name}</td>
@@ -145,60 +154,60 @@ const PatientDetails = () => {
       )}
 
       {editingPatient && (
-        <div className="mt-8">
-          <h3 className="text-xl font-bold mb-4">Edit Patient</h3>
+        <div className="mt-8 p-6 bg-white rounded-lg shadow-md">
+          <h3 className="text-xl font-bold mb-4 text-gray-700">Edit Patient</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block mb-1">Name:</label>
+              <label className="block mb-1 text-gray-700">Name:</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
-              <label className="block mb-1">Date of Birth:</label>
+              <label className="block mb-1 text-gray-700">Date of Birth:</label>
               <input
                 type="date"
                 name="dob"
                 value={formData.dob}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
-              <label className="block mb-1">Father's Name:</label>
+              <label className="block mb-1 text-gray-700">Father's Name:</label>
               <input
                 type="text"
                 name="father_name"
                 value={formData.father_name}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
-              <label className="block mb-1">Husband's Name:</label>
+              <label className="block mb-1 text-gray-700">Husband's Name:</label>
               <input
                 type="text"
                 name="husband_name"
                 value={formData.husband_name}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
-              <label className="block mb-1">Gender:</label>
+              <label className="block mb-1 text-gray-700">Gender:</label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -207,25 +216,26 @@ const PatientDetails = () => {
               </select>
             </div>
             <div>
-              <label className="block mb-1">Mobile:</label>
+              <label className="block mb-1 text-gray-700">Mobile:</label>
               <input
                 type="text"
                 name="mobile"
                 value={formData.mobile}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              className="w-full px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600"
             >
               Save Changes
             </button>
           </form>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const authenticate = require('../middleware/auth')
+const authenticate = require('../middleware/auth');
 
 router.get('/', authenticate, (req, res) => {
   db.query(`

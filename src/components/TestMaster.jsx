@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from "../api";
 
 const TestMaster = () => {
@@ -14,6 +16,8 @@ const TestMaster = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editTestId, setEditTestId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -22,6 +26,7 @@ const TestMaster = () => {
         setPatients(response.data);
       } catch (error) {
         console.error("Error fetching patients:", error);
+        toast.error("Error fetching patients.");
       }
     };
 
@@ -31,6 +36,7 @@ const TestMaster = () => {
         setTests(response.data);
       } catch (error) {
         console.error("Error fetching tests:", error);
+        toast.error("Error fetching tests.");
       }
     };
 
@@ -40,12 +46,14 @@ const TestMaster = () => {
         setTestCosts(response.data);
       } catch (error) {
         console.error("Error fetching test costs:", error);
+        toast.error("Error fetching test costs.");
       }
     };
 
     fetchPatients();
     fetchTests();
     fetchTestCosts();
+    setLoading(false);
   }, []);
 
   const handleChange = (e) => {
@@ -64,6 +72,7 @@ const TestMaster = () => {
     );
     if (!selectedTestCost) {
       console.error("Test cost not found");
+      toast.error("Test cost not found.");
       return;
     }
 
@@ -72,6 +81,7 @@ const TestMaster = () => {
     );
     if (!selectedPatient) {
       console.error("Patient not found");
+      toast.error("Patient not found.");
       return;
     }
 
@@ -79,7 +89,7 @@ const TestMaster = () => {
       ...formData,
       name: selectedPatient.name,
       cost: selectedTestCost.cost,
-      department: selectedTestCost.department, // Add department here
+      department: selectedTestCost.department,
     };
 
     try {
@@ -87,8 +97,10 @@ const TestMaster = () => {
         await api.put(`/tests/${editTestId}`, newTest);
         setIsEditing(false);
         setEditTestId(null);
+        toast.success("Test updated successfully!");
       } else {
         await api.post("/tests", newTest);
+        toast.success("Test added successfully!");
       }
 
       setFormData({
@@ -103,6 +115,7 @@ const TestMaster = () => {
       setTests(response.data);
     } catch (error) {
       console.error("Error saving test:", error);
+      toast.error("Error saving test.");
     }
   };
 
@@ -119,27 +132,39 @@ const TestMaster = () => {
   };
 
   const handleDelete = async (testId) => {
+    if (!window.confirm("Are you sure you want to delete this test?")) return;
+
     try {
       await api.delete(`/tests/${testId}`);
       const response = await api.get("/tests");
       setTests(response.data);
+      toast.success("Test deleted successfully!");
     } catch (error) {
       console.error("Error deleting test:", error);
+      toast.error("Error deleting test.");
     }
   };
 
+  if (loading) {
+    return <div className="text-blue-500 text-center text-xl">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center text-xl">{error}</div>;
+  }
+
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Test Master</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="p-8 bg-gradient-to-t from-emerald-500 to-sky-600 min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Test Master</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
         <div>
-          <label className="block mb-1">Patient:</label>
+          <label className="block mb-1 text-gray-700">Patient:</label>
           <select
             name="patientId"
             value={formData.patientId}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="">Select Patient</option>
             {patients.map((patient) => (
@@ -150,13 +175,13 @@ const TestMaster = () => {
           </select>
         </div>
         <div>
-          <label className="block mb-1">Test:</label>
+          <label className="block mb-1 text-gray-700">Test:</label>
           <select
             name="test"
             value={formData.test}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="">Select Test</option>
             {testCosts.map((test) => (
@@ -167,13 +192,13 @@ const TestMaster = () => {
           </select>
         </div>
         <div>
-          <label className="block mb-1">Test Performed:</label>
+          <label className="block mb-1 text-gray-700">Test Performed:</label>
           <select
             name="testPerformed"
             value={formData.testPerformed}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="Not Selected">Not Selected</option>
             <option value="Done">Done</option>
@@ -181,13 +206,13 @@ const TestMaster = () => {
           </select>
         </div>
         <div>
-          <label className="block mb-1">Payment Due:</label>
+          <label className="block mb-1 text-gray-700">Payment Due:</label>
           <select
             name="paymentDue"
             value={formData.paymentDue}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="Not Selected">Not Selected</option>
             <option value="Yes">Yes</option>
@@ -196,15 +221,15 @@ const TestMaster = () => {
         </div>
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
         >
           {isEditing ? "Edit Details" : "Add Details"}
         </button>
       </form>
 
-      <h3 className="text-xl font-bold mt-8 mb-4">Test Details</h3>
-      <table className="min-w-full bg-white border">
-        <thead>
+      <h3 className="text-xl font-bold mt-8 mb-4 text-gray-800">Test Details</h3>
+      <table className="min-w-full bg-white shadow-md rounded-lg">
+        <thead className="bg-gray-200">
           <tr>
             <th className="py-2 px-4 border">Test ID</th>
             <th className="py-2 px-4 border">Patient ID</th>
@@ -213,14 +238,13 @@ const TestMaster = () => {
             <th className="py-2 px-4 border">Cost</th>
             <th className="py-2 px-4 border">Test Performed</th>
             <th className="py-2 px-4 border">Payment Due</th>
-            <th className="py-2 px-4 border">Department</th>{" "}
-            {/* Add this line */}
+            <th className="py-2 px-4 border">Department</th>
             <th className="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
         <tbody>
           {tests.map((test) => (
-            <tr key={test.Test_ID}>
+            <tr key={test.Test_ID} className="hover:bg-gray-100">
               <td className="py-2 px-4 border">{test.Test_ID}</td>
               <td className="py-2 px-4 border">{test.Patient_ID}</td>
               <td className="py-2 px-4 border">{test.Name}</td>
@@ -228,8 +252,7 @@ const TestMaster = () => {
               <td className="py-2 px-4 border">{test.Cost}</td>
               <td className="py-2 px-4 border">{test.Test_Performed}</td>
               <td className="py-2 px-4 border">{test.Payment_Due}</td>
-              <td className="py-2 px-4 border">{test.Department}</td>{" "}
-              {/* Add this line */}
+              <td className="py-2 px-4 border">{test.Department}</td>
               <td className="py-2 px-4 border">
                 <button
                   onClick={() => handleEdit(test)}
@@ -248,6 +271,7 @@ const TestMaster = () => {
           ))}
         </tbody>
       </table>
+      <ToastContainer />
     </div>
   );
 };

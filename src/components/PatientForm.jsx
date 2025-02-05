@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from '../api';
 
 const PatientForm = ({ onSuccess }) => {
@@ -10,9 +12,6 @@ const PatientForm = ({ onSuccess }) => {
         gender: '',
         mobile: '',
     });
-
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,71 +36,69 @@ const PatientForm = ({ onSuccess }) => {
                 mobile: '',
             });
 
-            setError('');
-            setSuccess('Patient added successfully!');
+            toast.success('Patient added successfully!');
             
             if (onSuccess) onSuccess();
         } catch (error) {
-            setSuccess('');
-            setError('Failed to add patient. Please try again.');
+            toast.error('Failed to add patient. Please try again.');
             console.error('Error:', error);
         }
     };
 
     return (
-        <div className="p-8">
-            <h2 className="text-2xl font-bold mb-4">Add New Patient</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="p-8 bg-gradient-to-t from-emerald-500 to-sky-600 min-h-screen">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Add New Patient</h2>
+            <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
                 <div>
-                    <label className="block mb-1">Name:</label>
+                    <label className="block mb-1 text-gray-700">Name:</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1">Date of Birth:</label>
+                    <label className="block mb-1 text-gray-700">Date of Birth:</label>
                     <input
                         type="date"
                         name="dob"
                         value={formData.dob}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1">Father's Name:</label>
+                    <label className="block mb-1 text-gray-700">Father's Name:</label>
                     <input
                         type="text"
                         name="father_name"
                         value={formData.father_name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1">Husband's Name:</label>
+                    <label className="block mb-1 text-gray-700">Husband's Name:</label>
                     <input
                         type="text"
                         name="husband_name"
                         value={formData.husband_name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
                 <div>
-                    <label className="block mb-1">Gender:</label>
+                    <label className="block mb-1 text-gray-700">Gender:</label>
                     <select
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                         <option value="">Select</option>
                         <option value="Male">Male</option>
@@ -110,20 +107,19 @@ const PatientForm = ({ onSuccess }) => {
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-1">Mobile:</label>
+                    <label className="block mb-1 text-gray-700">Mobile:</label>
                     <input
                         type="text"
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Add Patient</button>
+                <button type="submit" className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">Add Patient</button>
             </form>
-            {success && <p className="mt-4 text-green-500">{success}</p>}
-            {error && <p className="mt-4 text-red-500">{error}</p>}
+            <ToastContainer />
         </div>
     );
 };

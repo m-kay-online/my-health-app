@@ -1,4 +1,3 @@
-// filepath: /D:/Files/File/Work/Codes/Indie Codes/React js/my-health-app/src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,22 +6,19 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      // Make API call to backend
-      const response = await axios.post('http://localhost:5000/auth/login', {
+      const response = await axios.post(`http://${import.meta.env.VITE_DB_HOST}:${import.meta.env.VITE_PORT}/auth/login`, {
         username: username,
         password: password
       });
 
-      // Store the JWT in localStorage or cookies
       localStorage.setItem('token', response.data.token);
-
-      // Redirect user to the homepage or dashboard
       navigate('/home');
     } catch (err) {
       setError(err.response ? err.response.data : 'Error logging in');
@@ -31,41 +27,50 @@ const Login = () => {
   };
 
   return (
-    <div className='flex flex-col min-h-screen justify-center items-center'>
-      <h1 className='text-6xl font-mono mb-4 text-white'>LOGIN</h1> 
+    <div className='flex flex-col min-h-screen justify-center items-center bg-gradient-to-r from-blue-400 to-purple-500 dark:from-gray-800 dark:to-black'>
+      <div className='bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md transform transition-transform hover:scale-105'>
+        <h1 className='text-4xl font-bold mb-4 text-center text-gray-800 dark:text-white'>LOGIN</h1> 
 
-      <form className='flex flex-col w-full items-center font-mono text-white text-lg' onSubmit={handleLogin}>
-        <div className='m-4 space-x-1'>
-          <label className='' htmlFor='usernameInput'>Username : <br/></label>
-          <input 
-            className='rounded-md w-80 h-8 text-black text-center' 
-            placeholder='Enter username here' 
-            id='usernameInput'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div className='mb-4 space-y-1'>
-          <label className='' htmlFor='passwordInput'>Password : <br/></label>
-          <input 
-            type='password' 
-            className='rounded-md w-80 h-8 text-black text-center' 
-            placeholder='Enter Password here' 
-            id='passwordInput'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <p className='text-red-500'>{error}</p>}
-        <div>
-          <button type='submit' className='border-2 w-20 h-10 rounded hover:bg-blue-500'>Login</button>
-        </div>
-      </form>
+        <form className='flex flex-col' onSubmit={handleLogin}>
+          <div className='mb-4'>
+            <label className='block text-gray-700 dark:text-gray-300' htmlFor='usernameInput'>Username</label>
+            <input 
+              className='mt-1 p-2 w-full border rounded-md' 
+              placeholder='Enter username here' 
+              id='usernameInput'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block text-gray-700 dark:text-gray-300' htmlFor='passwordInput'>Password</label>
+            <div className='relative flex items-center'>
+              <input 
+                type={showPassword ? 'text' : 'password'} 
+                className='mt-1 p-2 w-full border rounded-md' 
+                placeholder='Enter Password here' 
+                id='passwordInput'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button 
+                type='button' 
+                className='absolute right-2 top-2 text-gray-600 dark:text-gray-300' 
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          </div>
+          {error && <p className='text-red-500 mb-4'>{error}</p>}
+          <button type='submit' className='w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600'>Login</button>
+        </form>
 
-      <div className='m-5'>
-        <button onClick={() => navigate("/signup")} className='text-white border-white bg-gray-800 w-20 h-10 font-mono rounded-md hover:bg-black'>
-          Signup
-        </button>
+        <div className='mt-4 text-center'>
+          <button onClick={() => navigate("/signup")} className='text-blue-500 hover:underline'>
+            Signup
+          </button>
+        </div>
       </div>
     </div>
   );
