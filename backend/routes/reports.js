@@ -24,8 +24,6 @@ router.get("/generate-pdf/:patientId", (req, res) => {
   };
 
   console.log(`Executing command: ${command}`);
-  console.log(`Working directory: ${options.cwd}`);
-  console.log(`Environment variables: ${JSON.stringify(env)}`);
 
   exec(command, options, (error, stdout, stderr) => {
     if (error) {

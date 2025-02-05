@@ -17,7 +17,6 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor to handle token expiration
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -29,5 +28,20 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+export const refreshToken = async () => {
+    try {
+        const response = await axios.post('http://localhost:5000/auth/refresh-token', {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        localStorage.setItem('token', response.data.token);
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        localStorage.removeItem('token');
+        window.location.href = '/'; // Redirect to login page
+    }
+};
 
 export default api;

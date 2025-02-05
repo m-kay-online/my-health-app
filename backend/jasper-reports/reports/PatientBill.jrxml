@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-    name="PatientBill"
-    language="groovy"
-    pageWidth="595"
-    pageHeight="842"
-    columnWidth="555"
-    leftMargin="20"
-    rightMargin="20"
-    topMargin="20"
-    bottomMargin="20"
-    uuid="13044415-59f6-4462-9fb5-775eb5cc3e66">
-
-    <property name="ireport.zoom" value="1.4641000000000006"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
-
-    <!-- Parameters and Fields -->
-    <parameter name="Patient_ID" class="java.lang.Integer"/>
-    
-    <queryString>
-        <![CDATA[SELECT
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientBillCourierNew" language="groovy" pageWidth="230" pageHeight="842" columnWidth="210" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="13044415-59f6-4462-9fb5-775eb5cc3e66">
+	<property name="net.sf.jasperreports.default.font.name" value="Courier New"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Patient_ID" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
     t.Patient_ID,
     t.Name,
     t.Tests,
@@ -38,190 +23,138 @@
 FROM tests t
 INNER JOIN patients p ON t.Patient_ID = p.id
 WHERE t.Patient_ID = $P{Patient_ID};]]>
-    </queryString>
-
-    <field name="Patient_ID" class="java.lang.Integer"/>
-    <field name="Name" class="java.lang.String"/>
-    <field name="Tests" class="java.lang.String"/>
-    <field name="Test_Performed" class="java.lang.String"/>
-    <field name="Payment_Due" class="java.lang.String"/>
-    <field name="Cost" class="java.math.BigDecimal"/>
-    <field name="Test_ID" class="java.lang.Integer"/>
-    <field name="Department" class="java.lang.String"/>
-    <field name="dob" class="java.sql.Date"/>
-    <field name="father_name" class="java.lang.String"/>
-    <field name="husband_name" class="java.lang.String"/>
-    <field name="gender" class="java.lang.String"/>
-    <field name="mobile" class="java.lang.String"/>
-
-    <!-- Fixed Variable Declaration -->
-    <variable name="Cost_Due" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[$F{Payment_Due} == "Yes" ? $F{Cost} : BigDecimal.ZERO]]></variableExpression>
-    </variable>
-
-    <!-- Report Structure -->
-    <background>
-        <band splitType="Stretch"/>
-    </background>
-
-    <title>
-        <band height="50" splitType="Stretch">
-            <staticText>
-                <reportElement x="0" y="0" width="555" height="30"/>
-                <textElement textAlignment="Center">
-                    <font size="18" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Patient Bill]]></text>
-            </staticText>
-        </band>
-    </title>
-
-    <pageHeader>
-        <band height="140" splitType="Stretch">
-            <!-- Patient Details Fields -->
-            <textField>
-                <reportElement x="0" y="0" width="555" height="20"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Patient ID: " + $F{Patient_ID}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="20" width="555" height="20"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Name: " + $F{Name}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="40" width="555" height="19"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Date of Birth: " + $F{dob}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="59" width="555" height="17"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Father Name: " + $F{father_name}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="76" width="555" height="20"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Husband Name: " + $F{husband_name}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="96" width="555" height="20"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Gender: " + $F{gender}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="116" width="555" height="24"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Mobile: " + $F{mobile}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-
-    <columnHeader>
-        <band height="20" splitType="Stretch">
-            <staticText>
-                <reportElement x="0" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Test ID]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="80" y="0" width="150" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Test]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="230" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Cost]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="310" y="0" width="100" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Test Performed]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="410" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Payment Due]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="490" y="0" width="65" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Department]]></text>
-            </staticText>
-        </band>
-    </columnHeader>
-
-    <detail>
-        <band height="20" splitType="Stretch">
-            <textField>
-                <reportElement x="0" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Test_ID}?.toString()]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="80" y="0" width="150" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Tests}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="230" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Cost}?.toString()]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="310" y="0" width="100" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Test_Performed}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="410" y="0" width="80" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Payment_Due}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="490" y="0" width="65" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{Department}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-
-    <summary>
-        <band height="50" splitType="Stretch">
-            <textField>
-                <reportElement x="0" y="0" width="555" height="20"/>
-                <textElement textAlignment="Right">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Total Cost Due: " + $V{Cost_Due}]]></textFieldExpression>
-            </textField>
-        </band>
-    </summary>
+	</queryString>
+	<field name="Patient_ID" class="java.lang.Integer"/>
+	<field name="Name" class="java.lang.String"/>
+	<field name="Tests" class="java.lang.String"/>
+	<field name="Test_Performed" class="java.lang.String"/>
+	<field name="Payment_Due" class="java.lang.String"/>
+	<field name="Cost" class="java.math.BigDecimal"/>
+	<field name="Test_ID" class="java.lang.Integer"/>
+	<field name="Department" class="java.lang.String"/>
+	<field name="dob" class="java.sql.Date"/>
+	<field name="father_name" class="java.lang.String"/>
+	<field name="husband_name" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
+	<field name="mobile" class="java.lang.String"/>
+	<variable name="Cost_Due" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Payment_Due}.equalsIgnoreCase("Yes") ? $F{Cost} : BigDecimal.ZERO]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30">
+			<staticText>
+				<reportElement x="0" y="0" width="210" height="30" uuid="69fe9391-5508-4fd0-97c2-c96f4c1e7100"/>
+				<textElement textAlignment="Center">
+					<font fontName="Courier New" size="12" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Patient Bill]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="110">
+			<textField>
+				<reportElement x="0" y="0" width="210" height="15" uuid="dc62b4b6-44fd-44df-8ae4-245441007b24"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Patient ID: " + $F{Patient_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="15" width="210" height="15" uuid="648a08b2-fa7f-4c5b-9a1c-1362d8584cb8"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Name: " + $F{Name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="30" width="210" height="15" uuid="eac437d4-4878-4e36-b909-b89bb1a18ec0"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DOB: " + $F{dob}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="45" width="210" height="15" uuid="bfb5a431-7ec2-43b2-87ff-3480f4fdf9a1"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Father: " + $F{father_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="60" width="210" height="15" uuid="7982bad7-8f5f-4022-abd7-7b76aa9453f0"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Husband: " + $F{husband_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="75" width="210" height="15" uuid="f8c46037-9123-4969-9f25-5907347e98d9"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Gender: " + $F{gender}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="90" width="210" height="15" uuid="bdcadb5d-58b3-4787-95c9-1477420722fd"/>
+				<textElement>
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Mobile: " + $F{mobile}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="45">
+			<textField>
+				<reportElement x="0" y="0" width="105" height="15" uuid="8da8bf68-ac98-45c4-9772-603e134e53d1"/>
+				<textElement>
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Test ID: " + $F{Test_ID} + " - " + $F{Tests}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="15" width="105" height="15" uuid="8ee99f18-776c-480c-b2b3-fd0446162838"/>
+				<textElement>
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Dept: " + $F{Department}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="30" width="105" height="15" uuid="48c2d899-1469-4dc4-806e-82cada0d00aa"/>
+				<textElement>
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Performed: " + $F{Test_Performed}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="0" width="100" height="15" uuid="921a33c9-443f-4318-8a99-f51cb7e62d06"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cost: " + $F{Cost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="15" width="100" height="15" uuid="845142b1-5440-483e-bd32-46ffe0ec6036"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="9" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Payment Due: " + $F{Payment_Due}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="30">
+			<textField>
+				<reportElement x="0" y="10" width="210" height="20" uuid="e6eec4fa-6ef5-440e-b2fc-abd33a780d16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="10" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total Cost Due: " + $V{Cost_Due}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
 </jasperReport>

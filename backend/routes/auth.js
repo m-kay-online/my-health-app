@@ -3,7 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
-
+const authenticate = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -42,10 +42,15 @@ router.post('/login', (req, res) => {
             return res.status(401).send('Invalid credentials');
         }
         
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '30m' }); // Token expires in 30 minutes
         res.json({ token });
         
     });
+});
+
+router.post('/refresh-token', authenticate, (req, res) => {
+    const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '30m' });
+    res.json({ token });
 });
 
 module.exports = router;
