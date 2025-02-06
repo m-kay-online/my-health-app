@@ -14,6 +14,12 @@ const Sidebar = () => {
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">Menu</h2>
         <nav className="space-y-2">
+        <Link 
+          to="/home" 
+          className={`block py-2 px-4 rounded transition duration-300 ${location.pathname === '/home' ? 'bg-gray-700 text-yellow-300' : 'hover:bg-gray-700'}`}
+        >
+          Home
+        </Link>
           <Link 
             to="/new-patient" 
             className={`block py-2 px-4 rounded transition duration-300 ${location.pathname === '/new-patient' ? 'bg-gray-700 text-yellow-300' : 'hover:bg-gray-700'}`}
